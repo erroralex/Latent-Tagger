@@ -1,0 +1,52 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Maven build output
+backend/target/
+
+# Maven wrapper (if not committing it intentionally)
+.mvn/wrapper/maven-wrapper.jar
+
+frontend/node_modules
+dist
+dist-ssr
+*.local
+node_modules
+
+# Electron dependencies and build output
+electron/node_modules
+electron/dist
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+
+
+# Bundled JRE created by jlink during build — never commit this
+electron/runtime
+
+# Ephemeral port file written to temp, but just in case
+.tagsmith-port
+.lmo-port
+
+.env
+.env.*
+!.env.example
+
+# Windows
+Thumbs.db
+desktop.ini

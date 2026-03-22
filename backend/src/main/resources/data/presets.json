@@ -1,0 +1,20 @@
+[
+  {
+    "id": "pony",
+    "label": "Pony Diffusion",
+    "qualityTags": ["score_9", "score_8_up", "score_7_up"],
+    "negativeTags": ["score_4", "score_3", "score_2", "score_1"]
+  },
+  {
+    "id": "illustrious",
+    "label": "Illustrious / NoobAI",
+    "qualityTags": ["masterpiece", "best quality", "very aesthetic"],
+    "negativeTags": ["worst quality", "bad quality", "lowres"]
+  },
+  {
+    "id": "generic",
+    "label": "Generic (SDXL / SD1.5)",
+    "qualityTags": ["masterpiece", "best quality", "highly detailed"],
+    "negativeTags": ["bad anatomy", "worst quality", "blurry"]
+  }
+]
