@@ -83,15 +83,30 @@ input {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
+  background: var(--bg-input);
+  border: 1px solid var(--border-input);
+  color: var(--text-primary);
+  border-radius: var(--border-radius-md, 8px);
+}
+
+input::placeholder {
+  color: var(--text-secondary);
 }
 
 .results-dropdown {
   position: absolute;
-  background: var(--color-background-soft);
-  border: 1px solid var(--color-border);
   width: 100%;
   max-height: 200px;
   overflow-y: auto;
   z-index: 10;
+
+  /* Glassmorphism Implementation */
+  background: var(--bg-panel);
+  backdrop-filter: var(--glass-blur, blur(10px));
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-panel);
+  border-radius: var(--border-radius-md, 8px);
+  margin-top: 4px;
+  padding: 4px;
 }
 </style>

@@ -45,9 +45,20 @@ const loadEntry = (entry) => {
 
 <style scoped>
 .history-panel {
-  padding: 8px;
-  border-left: 1px solid var(--color-border);
+  padding: 16px;
   height: 100%;
+
+  /* Glassmorphism Implementation */
+  background: var(--bg-panel);
+  backdrop-filter: var(--glass-blur, blur(10px));
+  border-left: 1px solid var(--border-light);
+  box-shadow: var(--shadow-panel);
+}
+
+.history-panel h3 {
+  color: var(--text-primary);
+  margin-top: 0;
+  margin-bottom: 16px;
 }
 
 .history-panel ul {
@@ -57,11 +68,37 @@ const loadEntry = (entry) => {
 }
 
 .history-panel li {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: var(--border-radius-md, 8px);
+  background: var(--bg-input);
+  border: 1px solid var(--border-input);
+}
+
+.history-panel .entry-tags {
+  color: var(--text-primary);
+  font-size: 14px;
+  margin-bottom: 4px;
 }
 
 .history-panel .entry-nl {
   font-style: italic;
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.history-panel button {
+  background: var(--accent-primary, var(--btn-fill));
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.history-panel button:hover {
+  background: var(--grad-hover, var(--accent-primary));
 }
 </style>

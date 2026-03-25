@@ -58,7 +58,7 @@ watch(() => props.tagName, async (newVal) => {
 }, { immediate: true });
 
 const addHint = (hintName) => {
-  promptStore.addTag({ name: hintName, type: 0, postCount: 0 }); // Type/Count defaults
+  promptStore.insertTag({ name: hintName, valid: true, postCount: 0 });
   hints.value = hints.value.filter(h => h !== hintName);
 };
 </script>
@@ -66,6 +66,11 @@ const addHint = (hintName) => {
 <style scoped>
 .implication-hints {
   margin-top: 16px;
+}
+
+.hints-label {
+  color: var(--text-secondary);
+  font-size: 14px;
 }
 
 .implication-hints .hints-container {
@@ -76,13 +81,18 @@ const addHint = (hintName) => {
 }
 
 .implication-hints .hint {
-  background: var(--color-background-mute);
-  padding: 2px 6px;
-  border-radius: 4px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  padding: 4px 8px;
+  border-radius: var(--border-radius-md, 8px);
   cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
 }
 
 .implication-hints .hint:hover {
-  background: var(--color-background-soft);
+  background: var(--accent-primary, var(--btn-fill));
+  border-color: var(--accent-primary, var(--border-light));
 }
 </style>
