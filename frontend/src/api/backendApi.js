@@ -17,7 +17,9 @@ async function fetchApi(path, options = {}) {
 
     if (!response.ok) {
         const errorBody = await response.json().catch(() => ({}))
-        throw new Error(errorBody.error || `HTTP error! status: ${response.status}`)
+        const error = new Error(errorBody.error || `HTTP error! status: ${response.status}`);
+        error.response = response;
+        throw error;
     }
 
     return response.json()
@@ -62,4 +64,17 @@ export async function saveHistory(tags, nlInput, model) {
         method: 'POST',
         body: JSON.stringify({ tags, nlInput, model })
     })
+}
+
+export async function getModelStatus() {
+    return fetchApi('/api/model/status');
+}
+
+export async function downloadModel() {
+    return fetchApi('/api/model/download', { method: 'POST' });
+}
+
+export async function getModelPath() {
+    const data = await fetchApi('/api/model/path');
+    return data.path;
 }

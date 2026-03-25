@@ -1,56 +1,60 @@
 <template>
-  <TitleBar />
-  <main>
-    <div v-if="backendStore.ready">
-      <router-view />
-    </div>
-    <div v-else class="loading-screen">
-      Connecting to backend...
-    </div>
-  </main>
+  <div class="layout-wrapper">
+    <header class="app-header glass-header drag-region">
+
+      <div class="header-left no-drag">
+        <span class="app-title text-gradient">Latent Tagger</span>
+      </div>
+
+      <div class="header-center"></div>
+
+      <div class="header-right no-drag">
+        <div class="window-controls">
+          <button class="win-btn" @click="minimizeWindow" title="Minimize">&#8211;</button>
+          <button class="win-btn" @click="maximizeWindow" title="Maximize">&#9723;</button>
+          <button class="win-btn close" @click="closeWindow" title="Close">&#10005;</button>
+        </div>
+      </div>
+
+    </header>
+
+    <main class="app-body">
+      <div v-if="backendStore.ready" class="app-main">
+        <router-view />
+      </div>
+      <div v-else class="loading-screen">
+        Connecting to backend...
+      </div>
+    </main>
+  </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import { useBackendStore } from './stores/useBackendStore'
-import TitleBar from './components/TitleBar.vue'
+import { onMounted } from 'vue';
+import { useTheme } from './composables/useTheme';
+import { useBackendStore } from './stores/useBackendStore';
 
-const backendStore = useBackendStore()
+const { currentTheme, applyTheme } = useTheme();
+const backendStore = useBackendStore();
 
-onMounted(() => {
-  backendStore.init()
-})
+const minimizeWindow = () => window.windowAPI?.minimize();
+const maximizeWindow = () => window.windowAPI?.maximize();
+const closeWindow = () => window.windowAPI?.close();
+
+onMounted(async () => {
+  applyTheme(currentTheme.value);
+  await backendStore.init();
+});
 </script>
 
 <style>
-/* Global styles */
-body {
-  margin: 0;
-  background-color: #1e1e1e;
-  color: #d4d4d4;
-  font-family: sans-serif;
-}
-button {
-  background-color: #3c3c3c;
-  color: #d4d4d4;
-  border: 1px solid #555;
-  padding: 8px 12px;
-  cursor: pointer;
-}
-button:hover {
-  background-color: #4c4c4c;
-}
-input, textarea, select {
-  background-color: #3c3c3c;
-  color: #d4d4d4;
-  border: 1px solid #555;
-  padding: 8px;
-}
 .loading-screen {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 32px);
+  height: 100%;
   font-size: 1.2em;
+  color: var(--text-primary);
+  background: var(--bg-app);
 }
 </style>

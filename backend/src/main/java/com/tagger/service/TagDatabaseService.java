@@ -10,6 +10,30 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * {@code TagDatabaseService} provides functionalities for searching, validating,
+ * and retrieving implications for tags. It acts as a central repository for tag-related data,
+ * including canonical tag names, aliases, and implication rules.
+ *
+ * <p>This service is initialized with data loaded by {@link TagDataLoader}, which includes
+ * sorted tag names, categories, post counts, tag aliases, and tag implications.
+ * It uses efficient search algorithms (like binary search) for quick lookups.
+ *
+ * <p>Key functionalities include:
+ * <ul>
+ *     <li>Searching for tags based on a query string, returning a limited number of
+ *         results sorted by post count.</li>
+ *     <li>Validating a given tag name, resolving aliases to their canonical names,
+ *         and indicating if the tag exists in the database.</li>
+ *     <li>Retrieving a list of tags that are implied by a given tag.</li>
+ * </ul>
+ *
+ * <p>All tag names are normalized to lowercase and spaces are replaced with underscores
+ * before processing to ensure consistent matching.
+ *
+ * @see TagDataLoader
+ * @see TagSearchResult
+ */
 public class TagDatabaseService {
 
     private final TagDataLoader.LoadResult loadResult;
@@ -74,8 +98,15 @@ public class TagDatabaseService {
         return implications.getOrDefault(canonicalName, Collections.emptyList());
     }
 
-    // Getters for startup logging
-    public int getTagCount() { return loadResult.names().length; }
-    public int getAliasCount() { return aliases.size(); }
-    public int getImplicationCount() { return implications.size(); }
+    public int getTagCount() {
+        return loadResult.names().length;
+    }
+
+    public int getAliasCount() {
+        return aliases.size();
+    }
+
+    public int getImplicationCount() {
+        return implications.size();
+    }
 }

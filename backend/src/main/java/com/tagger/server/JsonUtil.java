@@ -8,6 +8,14 @@ import com.sun.net.httpserver.HttpExchange;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * Utility class for JSON serialization and deserialization using Jackson.
+ * This class provides static methods to convert Java objects to JSON strings,
+ * JSON strings to Java objects, and to send JSON responses over HTTP.
+ *
+ * <p>It configures the {@link ObjectMapper} to ignore unknown properties during
+ * deserialization, providing flexibility when dealing with evolving API contracts.
+ */
 public class JsonUtil {
 
     private static final ObjectMapper MAPPER = new ObjectMapper()

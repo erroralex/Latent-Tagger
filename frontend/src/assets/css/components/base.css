@@ -1,0 +1,133 @@
+/**
+ * Base Styles & Resets
+ * Description: Global CSS variables, resets, and core typography.
+ */
+
+:root {
+    /* Structural Fallbacks (overridden by themes) */
+    --glass-blur: blur(12px);
+    --shadow-panel: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --border-light: rgba(255, 255, 255, 0.1);
+    --bg-header: rgba(15, 15, 15, 0.6);
+    --bg-panel: rgba(20, 20, 20, 0.4);
+
+    /* Spacing Fallbacks */
+    --spacing-xxs: 2px;
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    --spacing-xxl: 48px;
+
+    /* Border Radius Fallbacks */
+    --border-radius-sm: 6px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 14px;
+
+    /* Component Dimensions Fallbacks */
+    --header-height: 52px;
+    --sidebar-width: 240px;
+    --logo-width: 100px;
+    --modal-max-width: 480px;
+    --content-max-width: 900px;
+    --drawer-height: 220px;
+    --arch-panel-max-height: 300px;
+
+    /* Font Size Fallbacks */
+    --font-size-xs: 0.75rem; /* 12px */
+    --font-size-sm: 0.875rem; /* 14px */
+    --font-size-md: 1rem; /* 16px */
+    --font-size-lg: 1.125rem; /* 18px */
+    --font-size-xl: 1.25rem; /* 20px */
+    --font-size-xxl: 1.5rem; /* 24px */
+    --font-size-h2: 1.5rem; /* For h2 in SettingsView */
+
+    /* Functional Colors */
+    --status-success: #4ade80;
+    --status-warning: #fbbf24;
+    --status-danger: #f87171;
+
+    /* Colors from former variables.css */
+    --color-background: #1a1a1a;
+    --color-background-soft: #2c2c2c;
+    --color-background-mute: #3a3a3a;
+    --color-text: #ffffff;
+    --color-text-secondary: #aaaaaa;
+    --color-border: #555555;
+    --color-primary: #4caf50; /* Green */
+    --color-success: #4caf50; /* Green */
+    --color-error: #f44336; /* Red */
+    --color-warning: #ff9800; /* Orange */
+
+    /* Glassmorphism for LlmDownloadPrompt */
+    --color-glass-background: rgba(44, 44, 44, 0.5);
+    --color-glass-border: rgba(255, 255, 255, 0.1);
+    --color-progress-background: rgba(0, 0, 0, 0.3);
+}
+
+/* --- Global Resets --- */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* --- Body & Layout --- */
+body {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background-color: var(--bg-app, #0f0f0f);
+    background-image: var(--bg-app-image, none);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text-primary, #ffffff);
+    font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Typography Utilities --- */
+.text-gradient {
+    background: var(--grad-text, linear-gradient(90deg, #fff, #ccc));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+}
+
+/* --- Custom Scrollbars --- */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Firefox Scrollbar Support */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* --- Root App Container (Prevent Layout Collapse) --- */
+#app {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}

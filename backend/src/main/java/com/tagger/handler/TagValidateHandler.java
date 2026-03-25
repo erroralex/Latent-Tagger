@@ -14,6 +14,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * {@code TagValidateHandler} is an {@link HttpHandler} that provides an API endpoint
+ * for validating a list of tags against the application's tag database. It specifically
+ * handles POST requests to an endpoint (e.g., {@code /api/tags/validate}).
+ *
+ * <p>The handler expects a JSON request body containing a list of tag strings.
+ * For each tag in the list, it uses the {@link TagDatabaseService} to validate
+ * its existence and resolve any aliases.
+ *
+ * <p>Authentication is enforced using {@link AuthFilter}. The response is a JSON
+ * object containing a list of {@link TagSearchResult} objects, one for each
+ * validated tag.
+ *
+ * @see TagDatabaseService
+ * @see TagSearchResult
+ * @see AuthFilter
+ * @see JsonUtil
+ * @see HttpHandler
+ */
 public class TagValidateHandler implements HttpHandler {
 
     private final TagDatabaseService tagDatabaseService;

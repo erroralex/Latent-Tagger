@@ -1,31 +1,55 @@
 <template>
   <div class="search-panel">
     <input
-      type="text"
-      v-model="query"
-      @input="debouncedSearch"
-      @keydown.esc="showResults = false"
-      @blur="onBlur"
-      placeholder="Search for tags..."
+        type="text"
+        v-model="query"
+        @input="debouncedSearch"
+        @keydown.esc="showResults = false"
+        @blur="onBlur"
+        placeholder="Search for tags..."
     />
     <div v-if="showResults && tagStore.searchResults.length > 0" class="results-dropdown">
       <TagChip
-        v-for="result in tagStore.searchResults"
-        :key="result.name"
-        :tag="result"
-        :removable="false"
-        @click="selectTag(result)"
+          v-for="result in tagStore.searchResults"
+          :key="result.name"
+          :tag="result"
+          :removable="false"
+          @click="selectTag(result)"
       />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useTagStore } from '../stores/useTagStore'
-import { usePromptStore } from '../stores/usePromptStore'
+/**
+ * TagSearchPanel.vue
+ *
+ * This component provides a search interface for finding and adding tags to the prompt.
+ * Users can type into an input field, and the component will display a dropdown of
+ * matching tags fetched from the backend.
+ *
+ * Search queries are debounced to prevent excessive API calls. When a tag is selected
+ * from the results, it is added to the current prompt.
+ *
+ * State:
+ * - `query`: A reactive reference to the current search input value.
+ * - `showResults`: A reactive boolean controlling the visibility of the search results dropdown.
+ *
+ * Actions:
+ * - `debouncedSearch`: A debounced function that triggers a tag search via `useTagStore`
+ *   after a short delay, updating `searchResults`.
+ * - `selectTag(tag)`: Adds the selected tag to the `usePromptStore` and clears the search.
+ * - `onBlur`: Hides the search results dropdown after a short delay when the input loses focus.
+ *
+ * @uses useTagStore For performing tag searches and accessing search results.
+ * @uses usePromptStore For adding selected tags to the prompt.
+ * @uses TagChip For displaying individual search results.
+ */
+import {ref} from 'vue'
+import {useTagStore} from '../stores/useTagStore'
+import {usePromptStore} from '../stores/usePromptStore'
 import TagChip from './TagChip.vue'
-import { debounce } from 'lodash-es'
+import {debounce} from 'lodash-es'
 
 const query = ref('')
 const showResults = ref(false)
@@ -54,15 +78,17 @@ const onBlur = () => {
 .search-panel {
   position: relative;
 }
+
 input {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
 }
+
 .results-dropdown {
   position: absolute;
-  background: #333;
-  border: 1px solid #555;
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
   width: 100%;
   max-height: 200px;
   overflow-y: auto;

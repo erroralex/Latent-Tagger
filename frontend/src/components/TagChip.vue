@@ -7,11 +7,34 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+/**
+ * TagChip.vue
+ *
+ * This component displays a single tag as a chip, optionally showing its post count
+ * and providing a removal button. The chip's appearance (border color) dynamically
+ * changes based on the tag's validation status (valid, invalid, or unvalidated).
+ *
+ * Props:
+ * - `tag` (Object, required): An object representing the tag, expected to have:
+ *   - `name` (String): The name of the tag.
+ *   - `postCount` (Number): The number of posts associated with the tag.
+ *   - `valid` (Boolean): Indicates if the tag has been validated against the database.
+ * - `removable` (Boolean, default: true): If true, a remove button is displayed,
+ *   allowing the user to remove the tag.
+ *
+ * Emits:
+ * - `remove` (String): Emitted when the remove button is clicked, passing the
+ *   name of the tag to be removed.
+ *
+ * Computed Properties:
+ * - `validationClass`: Determines the CSS class ('valid', 'invalid', 'unvalidated')
+ *   based on the `tag.valid` property to style the chip accordingly.
+ */
+import {computed} from 'vue'
 
 const props = defineProps({
-  tag: { type: Object, required: true },
-  removable: { type: Boolean, default: true }
+  tag: {type: Object, required: true},
+  removable: {type: Boolean, default: true}
 })
 
 defineEmits(['remove'])
@@ -34,25 +57,31 @@ const validationClass = computed(() => {
   border: 1px solid;
   white-space: nowrap;
 }
-.valid {
-  border-color: #4caf50;
-  color: #4caf50;
+
+.tag-chip.valid {
+  border-color: var(--color-success);
+  color: var(--color-success);
 }
-.invalid {
-  border-color: #f44336;
-  color: #f44336;
+
+.tag-chip.invalid {
+  border-color: var(--color-error);
+  color: var(--color-error);
 }
-.unvalidated {
-  border-color: #ff9800;
-  color: #ff9800;
+
+.tag-chip.unvalidated {
+  border-color: var(--color-warning);
+  color: var(--color-warning);
 }
+
 .tag-name {
   margin-right: 8px;
 }
+
 .tag-count {
   font-size: 11px;
   opacity: 0.7;
 }
+
 .remove-btn {
   margin-left: 8px;
   background: none;
@@ -64,6 +93,7 @@ const validationClass = computed(() => {
   line-height: 1;
   opacity: 0;
 }
+
 .tag-chip:hover .remove-btn {
   opacity: 1;
 }

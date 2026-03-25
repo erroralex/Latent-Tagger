@@ -14,6 +14,24 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * {@code ImplicationsHandler} is an {@link HttpHandler} that provides an API endpoint
+ * for retrieving tag implications. It specifically handles GET requests to an endpoint
+ * (e.g., {@code /api/tags/implications}).
+ *
+ * <p>Clients can request implications for a specific tag by providing a 'tag' parameter
+ * in the URL query string. The handler uses the {@link TagDatabaseService} to look up
+ * the implied tags.
+ *
+ * <p>Authentication is enforced using {@link AuthFilter}. If the 'tag' parameter is missing
+ * or blank, a 400 Bad Request error is returned. Otherwise, a JSON response containing
+ * a list of implied tags is sent.
+ *
+ * @see TagDatabaseService
+ * @see AuthFilter
+ * @see JsonUtil
+ * @see HttpHandler
+ */
 public class ImplicationsHandler implements HttpHandler {
 
     private final TagDatabaseService tagDatabaseService;

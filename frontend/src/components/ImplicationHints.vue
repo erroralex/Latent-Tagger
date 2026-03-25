@@ -1,61 +1,88 @@
 <template>
-  <div class="implication-hints" v-if="implications.length > 0">
-    <strong>Implications for {{ tagName }}:</strong>
+  <div class="implication-hints" v-if="hints.length > 0">
+    <div class="hints-label">Suggested Additions:</div>
     <div class="hints-container">
-      <span v-for="imp in implications" :key="imp" @click="addTag(imp)" class="hint">
-        {{ imp }}
+      <span
+          v-for="hint in hints"
+          :key="hint"
+          class="hint"
+          @click="addHint(hint)"
+      >
+        {{ hint }}
       </span>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
-import { getImplications } from '../api/backendApi'
-import { usePromptStore } from '../stores/usePromptStore'
+/**
+ * ImplicationHints.vue
+ *
+ * This component displays a list of suggested tags based on a provided base tag.
+ * It's used to help users quickly add related tags that are often used together
+ * with the one they just added.
+ *
+ * It listens for changes to the `tagName` prop, fetches the implications from
+ * the backend, and displays them as clickable elements. Clicking a hint adds it
+ * to the current prompt via the `usePromptStore`.
+ *
+ * @prop {String} tagName The name of the tag to fetch implications for.
+ * @uses getImplications For fetching implications from the backend server.
+ * @uses usePromptStore For adding a suggested tag to the user's prompt.
+ */
+import { ref, watch } from 'vue';
+import { getImplications } from '../api/backendApi'; // Corrected import
+import { usePromptStore } from '../stores/usePromptStore';
 
 const props = defineProps({
-  tagName: { type: String, required: true }
-})
+  tagName: {
+    type: String,
+    required: true
+  }
+});
 
-const implications = ref([])
-const promptStore = usePromptStore()
+const hints = ref([]);
+const promptStore = usePromptStore();
 
-watch(() => props.tagName, async (newTagName) => {
-  if (newTagName) {
+watch(() => props.tagName, async (newVal) => {
+  if (newVal) {
     try {
-      implications.value = await getImplications(newTagName)
-    } catch (error) {
-      console.error('Failed to get implications:', error)
-      implications.value = []
+      hints.value = await getImplications(newVal); // Corrected function call
+    } catch (e) {
+      console.error("Failed to load implications", e);
+      hints.value = [];
     }
   } else {
-    implications.value = []
+    hints.value = [];
   }
-}, { immediate: true })
+}, { immediate: true });
 
-const addTag = (name) => {
-  promptStore.insertTag({ name, valid: null, postCount: 0 })
-}
+const addHint = (hintName) => {
+  promptStore.addTag({ name: hintName, type: 0, postCount: 0 }); // Type/Count defaults
+  hints.value = hints.value.filter(h => h !== hintName);
+};
 </script>
 
 <style scoped>
 .implication-hints {
   margin-top: 16px;
 }
-.hints-container {
+
+.implication-hints .hints-container {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 4px;
 }
-.hint {
-  background: #444;
+
+.implication-hints .hint {
+  background: var(--color-background-mute);
   padding: 2px 6px;
   border-radius: 4px;
   cursor: pointer;
 }
-.hint:hover {
-  background: #555;
+
+.implication-hints .hint:hover {
+  background: var(--color-background-soft);
 }
 </style>

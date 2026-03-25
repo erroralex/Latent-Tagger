@@ -15,11 +15,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * {@code TagDataLoader} is responsible for loading tag data, aliases, and implications
+ * from CSV files located in the application's resources. It parses these files
+ * and prepares the data for the {@link TagDatabaseService}.
+ *
+ * <p>The class handles the following data sources:
+ * <ul>
+ *     <li>{@code /data/tags.csv}: Contains the primary tag information, including
+ *         tag names, categories, and post counts. Tags with a post count less than 20
+ *         are filtered out. The loaded tags are sorted alphabetically by name.</li>
+ *     <li>{@code /data/tag-aliases.csv}: Contains tag alias mappings. Only active
+ *         aliases are loaded, mapping an antecedent tag to a consequent tag.</li>
+ *     <li>{@code /data/tag-implications.csv}: Contains tag implication mappings.
+ *         Only active implications are loaded, where one tag implies another.</li>
+ * </ul>
+ *
+ * <p>This class provides static methods to load all necessary data and construct
+ * a {@link TagDatabaseService} instance. It logs warnings if resource files are
+ * not found and errors if parsing fails.
+ *
+ * <p>The {@code LoadResult} record encapsulates the arrays of sorted tag names,
+ * categories, and post counts.
+ *
+ * @see TagDatabaseService
+ */
 public class TagDataLoader {
 
     private static final Logger log = LoggerFactory.getLogger(TagDataLoader.class);
 
-    public record LoadResult(String[] names, int[] categories, int[] postCounts) {}
+    public record LoadResult(String[] names, int[] categories, int[] postCounts) {
+    }
 
     public static TagDatabaseService load() {
         LoadResult tagLoadResult = loadTags();
@@ -63,7 +89,6 @@ public class TagDataLoader {
             log.error("Failed to load tags.csv", e);
         }
 
-        // Sort the tags by name
         Integer[] indices = new Integer[names.size()];
         for (int i = 0; i < indices.length; i++) indices[i] = i;
         Arrays.sort(indices, Comparator.comparing(names::get));
@@ -116,7 +141,7 @@ public class TagDataLoader {
                 return implications;
             }
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-                reader.readLine(); // Skip header
+                reader.readLine();
                 String line;
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split(",", -1);

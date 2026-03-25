@@ -13,6 +13,23 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * {@code ShutdownHandler} is an {@link HttpHandler} that provides an endpoint
+ * to gracefully shut down the application. It listens for POST requests to
+ * {@code /api/shutdown}.
+ *
+ * <p>Upon receiving an authorized shutdown request, it sends an immediate
+ * success response to the client and then initiates a delayed system exit.
+ * The delay is introduced to allow the HTTP response to be fully sent before
+ * the application terminates.
+ *
+ * <p>Authentication is enforced using {@link AuthFilter} to prevent unauthorized
+ * shutdowns.
+ *
+ * @see AuthFilter
+ * @see JsonUtil
+ * @see HttpHandler
+ */
 public class ShutdownHandler implements HttpHandler {
 
     private static final Logger log = LoggerFactory.getLogger(ShutdownHandler.class);
@@ -22,7 +39,7 @@ public class ShutdownHandler implements HttpHandler {
         log.info("Received request for /api/shutdown from {}", exchange.getRemoteAddress());
 
         if (!"POST".equals(exchange.getRequestMethod())) {
-            exchange.sendResponseHeaders(405, -1); // Method Not Allowed
+            exchange.sendResponseHeaders(405, -1);
             return;
         }
 
