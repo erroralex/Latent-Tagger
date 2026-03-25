@@ -3,6 +3,7 @@ package com.tagger;
 import com.tagger.data.TagDataLoader;
 import com.tagger.server.ApiServer;
 import com.tagger.service.HistoryService;
+import com.tagger.service.LlmModelService;
 import com.tagger.service.TagDatabaseService;
 import com.tagger.service.TranslationService;
 import org.slf4j.Logger;
@@ -14,6 +15,31 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+/**
+ * {@code LatentTaggerApplication} is the entry point for the Latent Tagger backend application.
+ * This class initializes and orchestrates the various services and components required
+ * for the application to function, including:
+ * <ul>
+ *     <li>Loading tag data, aliases, and implications into {@link TagDatabaseService}.</li>
+ *     <li>Setting up the {@link TranslationService} for natural language to tag translation.</li>
+ *     <li>Initializing the {@link HistoryService} for persistent storage of translation history.</li>
+ *     <li>Managing the {@link LlmModelService} for downloading and monitoring the LLM.</li>
+ *     <li>Starting the {@link ApiServer} to expose RESTful endpoints for client interaction.</li>
+ * </ul>
+ *
+ * <p>The application generates a unique authentication token at startup, which is used
+ * to secure various API endpoints. It also writes a temporary file containing the
+ * server's port and authentication token, facilitating client discovery. This file
+ * is automatically cleaned up on application shutdown.
+ *
+ * <p>The main thread is kept alive indefinitely to allow the HTTP server to operate.
+ *
+ * @see TagDatabaseService
+ * @see TranslationService
+ * @see HistoryService
+ * @see LlmModelService
+ * @see ApiServer
+ */
 public class LatentTaggerApplication {
 
     private static final Logger log = LoggerFactory.getLogger(LatentTaggerApplication.class);
@@ -32,8 +58,9 @@ public class LatentTaggerApplication {
 
         TranslationService translationService = new TranslationService(tagDatabaseService);
         HistoryService historyService = new HistoryService();
+        LlmModelService llmModelService = new LlmModelService();
 
-        ApiServer server = new ApiServer(tagDatabaseService, translationService, historyService);
+        ApiServer server = new ApiServer(tagDatabaseService, translationService, historyService, llmModelService);
         server.start();
 
         int port = server.getAddress().getPort();
@@ -59,7 +86,6 @@ public class LatentTaggerApplication {
             }
         }));
 
-        // Keep main thread alive so the server can run
         Thread.sleep(Long.MAX_VALUE);
     }
 }

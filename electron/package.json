@@ -1,14 +1,20 @@
 {
   "name": "latent-tagger",
   "version": "1.0.0",
-  "description": "",
+  "description": "Electron application for Latent Tagger, a tool for natural language to tag translation.",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "electron",
+    "vue",
+    "java",
+    "tagger",
+    "ai"
+  ],
+  "author": "Alexander Nilsson",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {

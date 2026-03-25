@@ -16,6 +16,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * {@code HistoryHandler} is an {@link HttpHandler} responsible for managing translation history
+ * entries. It supports two main operations:
+ * <ul>
+ *     <li><b>GET /api/history:</b> Retrieves a list of recent translation history entries.
+ *         It can be optionally filtered by a {@code limit} query parameter to specify
+ *         the maximum number of entries to return. Requires authentication.</li>
+ *     <li><b>POST /api/history:</b> Saves a new translation history entry. The request body
+ *         must contain a JSON object with {@code tags}, {@code nlInput}, and {@code model} fields.
+ *         Requires authentication.</li>
+ * </ul>
+ *
+ * <p>This handler integrates with {@link HistoryService} to perform database operations
+ * and uses {@link AuthFilter} to enforce API key authentication for all requests.
+ * Responses are formatted as JSON using {@link JsonUtil}.
+ *
+ * @see HistoryService
+ * @see AuthFilter
+ * @see JsonUtil
+ * @see HttpHandler
+ */
 public class HistoryHandler implements HttpHandler {
 
     private final HistoryService historyService;
@@ -56,7 +77,7 @@ public class HistoryHandler implements HttpHandler {
         }
 
         try (InputStream is = exchange.getRequestBody()) {
-            String body = new String(is.readAllBytes(), "UTF-8");
+            String body = new String(is.readAllBytes(), StandardCharsets.UTF_8);
             HistoryRequest request = JsonUtil.fromJson(body, HistoryRequest.class);
 
             if (request == null || request.tags == null) {

@@ -1,16 +1,34 @@
 /**
  * main.js
  *
- * The primary process controller for the Electron application.
- * It orchestrates the native desktop environment, lifecycle management,
- * and cross-process communication (IPC).
+ * This script is the main process entry point for the Electron application.
+ * It is responsible for setting up the desktop environment, managing the lifecycle
+ * of the application, and orchestrating communication between the renderer process
+ * and the underlying Java backend.
  *
- * Key Capabilities:
- * - Backend Lifecycle: Spawns and manages the Java backend process with ephemeral port discovery.
- * - Native Integration: Provides access to file dialogs and shell operations (openPath).
- * - IPC Bridge: Handles requests from the renderer for backend port resolution and window controls.
- * - Resource Management: Implements a clean shutdown sequence, terminating the backend
- *   and cleaning up temporary port-hint files on exit.
+ * Key functionalities include:
+ * - **Backend Process Management**: Spawns and manages the Java backend application.
+ *   It handles the discovery of the backend's ephemeral port and authentication token,
+ *   which are crucial for secure inter-process communication.
+ * - **Window Management**: Creates and manages the main application window and a
+ *   splash screen during startup. It ensures the main window is shown only after
+ *   the backend is ready.
+ * - **Inter-Process Communication (IPC)**: Sets up handlers for various IPC messages
+ *   from the renderer process, enabling features like:
+ *     - Retrieving backend connection details (port and token).
+ *     - Opening native file dialogs for folder selection.
+ *     - Opening external URLs in the system's default browser.
+ *     - Controlling window states (minimize, maximize, close).
+ * - **Application Lifecycle Management**: Handles application events such as `ready`,
+ *   `before-quit`, and `window-all-closed` to ensure a graceful shutdown, including
+ *   terminating the backend process and cleaning up temporary files.
+ * - **Development vs. Production Environment**: Adapts its behavior based on whether
+ *   the application is running in development mode (e.g., connecting to a local
+ *   Vite server) or in a packaged production build.
+ *
+ * The application uses a temporary file (`.tagger-port`) to facilitate the discovery
+ * of the backend's dynamically assigned port and authentication token. This file is
+ * created by the Java backend and read by the Electron main process.
  */
 
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
@@ -206,6 +224,12 @@ app.whenReady().then(async () => {
         return Promise.resolve('Invalid path');
     });
 
+    ipcMain.on('shell:openPath', (_event, path) => {
+        if (typeof path === 'string' && path.length > 0) {
+            shell.openPath(path);
+        }
+    });
+
     ipcMain.handle('app:getBackendPort', () => ({ port: backendPort, token: backendToken }));
 
     ipcMain.handle('api:undoLastOrganization', async () => {
@@ -256,7 +280,7 @@ app.on('before-quit', async (event) => {
         try {
             await fetch(shutdownUrl, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + backendToken
                 },

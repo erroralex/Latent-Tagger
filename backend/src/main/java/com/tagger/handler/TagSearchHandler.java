@@ -14,6 +14,24 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * {@code TagSearchHandler} is an {@link HttpHandler} that provides an API endpoint
+ * for searching tags within the application's tag database. It specifically handles
+ * GET requests to {@code /api/tags/search}.
+ *
+ * <p>Clients can query for tags by providing a 'q' parameter in the URL.
+ * An optional 'limit' parameter can be used to control the maximum number of
+ * search results returned (defaulting to 20, with a hard cap at 50).
+ *
+ * <p>This handler relies on {@link TagDatabaseService} to perform the actual tag search
+ * and uses {@link AuthFilter} to ensure that only authenticated requests are processed.
+ * Responses are formatted as JSON using {@link JsonUtil}.
+ *
+ * @see TagDatabaseService
+ * @see AuthFilter
+ * @see JsonUtil
+ * @see HttpHandler
+ */
 public class TagSearchHandler implements HttpHandler {
 
     private final TagDatabaseService tagDatabaseService;

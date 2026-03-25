@@ -1,4 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Latent Tagger Backend Project
+ *
+ * This Maven project defines the backend application for the Latent Tagger.
+ * It is responsible for handling tag search, validation, implications,
+ * natural language to tag translation using an ONNX model, history management,
+ * and serving these functionalities via a RESTful API.
+ *
+ * Key Technologies and Dependencies:
+ * - Java 21: The primary development language, leveraging modern features.
+ * - Maven: Used for project management and build automation.
+ * - SLF4J with Logback: For flexible and efficient logging.
+ * - Jackson: For JSON serialization and deserialization, crucial for API communication.
+ * - SQLite JDBC: Driver for interacting with the SQLite database used for history persistence.
+ * - ONNX Runtime (onnxruntime): For executing the pre-trained ONNX Large Language Model
+ *   for natural language processing and tag generation.
+ * - HuggingFace Tokenizers (ai.djl.huggingface:tokenizers): Used for tokenizing
+ *   natural language input before feeding it to the ONNX model.
+ *
+ * The project is packaged as an executable JAR with all its dependencies,
+ * making it easy to deploy and run as a standalone application.
+ * The `maven-assembly-plugin` is configured to create a single "jar-with-dependencies"
+ * artifact, with `com.tagger.LatentTaggerApplication` as the main entry point.
+ */
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -36,6 +62,16 @@
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.45.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.onnxruntime</groupId>
+            <artifactId>onnxruntime</artifactId>
+            <version>1.18.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ai.djl.huggingface</groupId>
+            <artifactId>tokenizers</artifactId>
+            <version>0.27.0</version>
         </dependency>
     </dependencies>
 

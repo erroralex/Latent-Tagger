@@ -15,6 +15,26 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+/**
+ * {@code TranslateHandler} is an {@link HttpHandler} that processes requests
+ * for natural language to tag translation. It specifically handles POST requests
+ * to the {@code /api/translate} endpoint.
+ *
+ * <p>The handler expects a JSON request body containing a {@link TranslationRequest}
+ * object, which includes the natural language text to be translated and the desired
+ * model family. It delegates the translation logic to the {@link TranslationService}.
+ *
+ * <p>Authentication is enforced using {@link AuthFilter}. If the request body is invalid
+ * or an error occurs during translation, appropriate HTTP error responses are sent.
+ * Successful translations return a {@link com.tagger.model.TranslationResponse} object
+ * as JSON.
+ *
+ * @see TranslationService
+ * @see TranslationRequest
+ * @see AuthFilter
+ * @see JsonUtil
+ * @see HttpHandler
+ */
 public class TranslateHandler implements HttpHandler {
 
     private static final Logger log = LoggerFactory.getLogger(TranslateHandler.class);

@@ -2,49 +2,44 @@
   <div class="settings-view">
     <h2>Settings</h2>
     <div class="setting">
-      <label for="apiKey">API Key</label>
-      <input type="password" id="apiKey" v-model="apiKey" />
-    </div>
-    <div class="setting">
-      <label for="modelFamily">Model Family</label>
-      <select id="modelFamily" v-model="translateStore.selectedModel">
-        <option value="generic">Generic (SDXL / SD1.5)</option>
-        <option value="pony">Pony Diffusion</option>
-        <option value="illustrious">Illustrious / NoobAI</option>
+      <label for="theme-select">Theme:</label>
+      <select id="theme-select" v-model="currentTheme" @change="applyTheme($event.target.value)">
+        <option v-for="theme in availableThemes" :key="theme" :value="theme">
+          {{ theme }}
+        </option>
       </select>
     </div>
-    <div class="setting">
-      <label>
-        <input type="checkbox" v-model="lowVramMode" />
-        Low VRAM Mode
-      </label>
-    </div>
-    <button @click="$router.push('/')">Back</button>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
-import { useTranslateStore } from '../stores/useTranslateStore'
+/**
+ * SettingsView.vue
+ *
+ * This component provides the user interface for configuring application settings.
+ * Currently, it allows the user to select and apply a different visual theme.
+ *
+ * It utilizes the `useTheme` composable to retrieve the currently active theme,
+ * a list of available themes, and the function to apply a newly selected theme.
+ * The selection triggers an immediate application of the new theme via the
+ * `@change` event.
+ *
+ * @uses useTheme For theme management (current theme, available themes, and apply function).
+ */
+import { useTheme } from '../composables/useTheme';
 
-const translateStore = useTranslateStore()
-
-const apiKey = ref(localStorage.getItem('apiKey') || '')
-const lowVramMode = ref(localStorage.getItem('lowVramMode') === 'true')
-
-watch(apiKey, (newVal) => localStorage.setItem('apiKey', newVal))
-watch(lowVramMode, (newVal) => localStorage.setItem('lowVramMode', newVal))
+const { currentTheme, availableThemes, applyTheme } = useTheme();
 </script>
 
 <style scoped>
 .settings-view {
-  padding: 16px;
+  padding: var(--spacing-md);
 }
 .setting {
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-md);
 }
 label {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: var(--spacing-xs);
 }
 </style>

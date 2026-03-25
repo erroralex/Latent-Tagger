@@ -14,6 +14,26 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * {@code HistoryService} manages the persistence and retrieval of translation history entries.
+ * It uses an SQLite database to store records of user queries, generated tags,
+ * the model used for translation, and the timestamp of the operation.
+ *
+ * <p>The database file is created and managed in the user's home directory under {@code .tagger/history.db}.
+ * This service ensures that the database schema is initialized upon instantiation if it doesn't already exist.
+ *
+ * <p>Key functionalities include:
+ * <ul>
+ *     <li>Saving new translation history entries, including the input natural language text,
+ *         the resulting tags, and the model identifier.</li>
+ *     <li>Retrieving a list of recent history entries, ordered by creation time.</li>
+ * </ul>
+ *
+ * <p>Error handling for database operations is implemented to log issues to standard error,
+ * preventing application crashes due to database problems.
+ *
+ * @see HistoryEntry
+ */
 public class HistoryService {
 
     private final String dbUrl;

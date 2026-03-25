@@ -14,6 +14,33 @@
 </template>
 
 <script setup>
+/**
+ * MainView.vue
+ *
+ * This component serves as the primary layout for the Latent Tagger application.
+ * It orchestrates the display and interaction of various sub-components related
+ * to tag translation, prompt editing, tag searching, and history management.
+ *
+ * The layout is divided into a main content area and a sidebar.
+ * The main content area houses:
+ * - TranslateInput: For natural language input and translation.
+ * - PresetBar: For quick access to predefined tag presets.
+ * - TagSearchPanel: For searching and adding tags to the prompt.
+ * - PromptEditor: For displaying and manually editing the current tag prompt.
+ * - ImplicationHints: Displays suggested tags based on the last added tag.
+ *
+ * The sidebar contains:
+ * - HistoryPanel: To view and manage past translation requests.
+ *
+ * This component utilizes several Vuex stores for state management:
+ * - useBackendStore: Manages the connection and status of the backend service.
+ * - useHistoryStore: Manages the history of translated prompts.
+ * - usePromptStore: Manages the current prompt's tags and related logic.
+ *
+ * On component mount, it initializes the backend store and, if the backend is ready,
+ * loads the history from the history store. It also computes the last added tag
+ * to dynamically display implication hints.
+ */
 import { onMounted, computed } from 'vue'
 import { useBackendStore } from '../stores/useBackendStore'
 import { useHistoryStore } from '../stores/useHistoryStore'

@@ -50,3 +50,8 @@ electron/runtime
 # Windows
 Thumbs.db
 desktop.ini
+
+# Local AI Models & Data
+*.onnx
+data/models/
+backend/data/models/

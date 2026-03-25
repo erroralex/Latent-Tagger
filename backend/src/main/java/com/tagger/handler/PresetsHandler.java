@@ -10,6 +10,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
+/**
+ * {@code PresetsHandler} is an {@link HttpHandler} that serves predefined tag presets
+ * from a JSON file. It specifically handles GET requests to retrieve the contents
+ * of {@code /data/presets.json} from the application's resources.
+ *
+ * <p>This handler ensures that only authenticated requests can access the presets
+ * by utilizing the {@link AuthFilter}. If the {@code presets.json} file is not found,
+ * it returns a 404 Not Found error. Any other issues during file reading or JSON
+ * parsing result in a 500 Internal Server Error.
+ *
+ * <p>The content of {@code presets.json} is expected to be a valid JSON structure,
+ * which is then directly sent as the HTTP response body.
+ *
+ * @see AuthFilter
+ * @see JsonUtil
+ * @see HttpHandler
+ */
 public class PresetsHandler implements HttpHandler {
 
     @Override
