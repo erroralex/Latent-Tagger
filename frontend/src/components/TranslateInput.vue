@@ -50,14 +50,55 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  /* Container Styling */
+  padding: 16px;
+  background: var(--bg-panel);
+  backdrop-filter: var(--glass-blur, blur(10px));
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-panel);
+  border-radius: var(--border-radius-md, 8px);
 }
 
 .translate-input textarea {
   height: 60px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-input);
+  color: var(--text-primary);
+  border-radius: 4px;
+  padding: 8px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.translate-input textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+.translate-input button {
+  background: var(--accent-primary, var(--btn-fill));
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.translate-input button:hover:not(:disabled) {
+  background: var(--grad-hover, var(--accent-primary));
+}
+
+.translate-input button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .translate-input .warning {
-  color: var(--color-warning);
+  color: var(--status-warning);
+  font-size: 13px;
+  margin-top: 4px;
 }
 
 .translate-input .spinner {

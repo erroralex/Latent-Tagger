@@ -54,6 +54,41 @@ public class TagDataLoader {
         return new TagDatabaseService(tagLoadResult, aliases, implications);
     }
 
+    /**
+     * Parses a single CSV line, respecting double-quoted fields that may contain commas.
+     * This custom character scanner avoids the overhead of regex compilation per line
+     * and external dependencies like OpenCSV, making it extremely fast for millions of rows.
+     * It also automatically strips the surrounding quotes from extracted values.
+     *
+     * @param line The raw CSV line string.
+     * @return An array of parsed and unquoted CSV fields.
+     */
+    private static String[] parseCsvLine(String line) {
+        if (line == null || line.isEmpty()) {
+            return new String[0];
+        }
+
+        List<String> tokens = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        boolean inQuotes = false;
+
+        for (int i = 0; i < line.length(); i++) {
+            char c = line.charAt(i);
+
+            if (c == '"') {
+                inQuotes = !inQuotes; // Toggle quote state
+            } else if (c == ',' && !inQuotes) {
+                tokens.add(sb.toString().trim());
+                sb.setLength(0); // Reset buffer
+            } else {
+                sb.append(c);
+            }
+        }
+        tokens.add(sb.toString().trim()); // Add the last token
+
+        return tokens.toArray(new String[0]);
+    }
+
     private static LoadResult loadTags() {
         List<String> names = new ArrayList<>();
         List<Integer> categories = new ArrayList<>();
@@ -67,13 +102,14 @@ public class TagDataLoader {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    String[] parts = line.split(",", -1);
+                    // Refactoring: Use the custom CSV parser to handle quotes safely
+                    String[] parts = parseCsvLine(line);
                     if (parts.length < 3) continue;
 
                     try {
-                        String name = parts[0].trim();
-                        int category = Integer.parseInt(parts[1].trim());
-                        int postCount = Integer.parseInt(parts[2].trim());
+                        String name = parts[0];
+                        int category = Integer.parseInt(parts[1]);
+                        int postCount = Integer.parseInt(parts[2]);
 
                         if (postCount < 20) continue;
 
@@ -116,13 +152,14 @@ public class TagDataLoader {
                 reader.readLine(); // Skip header
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    String[] parts = line.split(",", -1);
+                    // Refactoring: Use the custom CSV parser to handle quotes safely
+                    String[] parts = parseCsvLine(line);
                     if (parts.length < 6) continue;
 
-                    String status = parts[5].trim();
+                    String status = parts[5];
                     if ("active".equals(status)) {
-                        String antecedent = parts[1].trim();
-                        String consequent = parts[2].trim();
+                        String antecedent = parts[1];
+                        String consequent = parts[2];
                         aliases.put(antecedent, consequent);
                     }
                 }
@@ -144,13 +181,14 @@ public class TagDataLoader {
                 reader.readLine();
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    String[] parts = line.split(",", -1);
+                    // Refactoring: Use the custom CSV parser to handle quotes safely
+                    String[] parts = parseCsvLine(line);
                     if (parts.length < 6) continue;
 
-                    String status = parts[5].trim();
+                    String status = parts[5];
                     if ("active".equals(status)) {
-                        String antecedent = parts[1].trim();
-                        String consequent = parts[2].trim();
+                        String antecedent = parts[1];
+                        String consequent = parts[2];
                         implications.computeIfAbsent(antecedent, k -> new ArrayList<>()).add(consequent);
                     }
                 }

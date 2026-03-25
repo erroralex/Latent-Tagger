@@ -11,6 +11,10 @@ import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -39,12 +43,19 @@ public class TranslationService {
 
     private final TagDatabaseService tagDatabaseService;
 
+    // Concurrency Fix: Dedicated thread pool for CPU-bound ONNX inference.
+    // Using a bounded platform thread pool of size 1 prevents memory thrashing on local hardware
+    // and isolates heavy CPU work from the ForkJoinPool, avoiding Virtual Thread carrier pinning.
+    private final ExecutorService inferenceExecutor;
+
     private static volatile OrtEnvironment ortEnv;
     private static volatile OrtSession ortSession;
     private static volatile HuggingFaceTokenizer tokenizer;
 
     public TranslationService(TagDatabaseService tagDatabaseService) {
         this.tagDatabaseService = tagDatabaseService;
+        // Initialize the dedicated platform thread pool for CPU-bound inference.
+        this.inferenceExecutor = Executors.newFixedThreadPool(1);
     }
 
     public TranslationResponse translate(String naturalText, String modelFamily) {
@@ -56,15 +67,35 @@ public class TranslationService {
         try {
             initializeResources();
             String prompt = createPrompt(naturalText);
-            String outputText = runInference(prompt);
+
+            // Concurrency Fix: Offload the heavy ONNX autoregressive loop to a platform thread.
+            // By supplying this async task to inferenceExecutor, we free the Virtual Thread.
+            // Calling .join() blocks the Virtual Thread without pinning an OS carrier thread,
+            // preserving the ultra-lightweight I/O capabilities of the ForkJoinPool.
+            String outputText = CompletableFuture.supplyAsync(() -> {
+                try {
+                    return runInference(prompt);
+                } catch (OrtException e) {
+                    throw new CompletionException(e);
+                }
+            }, inferenceExecutor).join();
+
             List<String> validTags = parseAndValidateTags(outputText);
 
             String warning = validTags.isEmpty() ? "The model returned no valid tags." : null;
             return new TranslationResponse(validTags, modelFamily, warning);
 
-        } catch (OrtException e) {
-            log.error("ONNX Runtime exception during translation", e);
+        } catch (CompletionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof OrtException) {
+                log.error("ONNX Runtime exception during translation inference", cause);
+            } else {
+                log.error("Unexpected error during async inference execution", cause != null ? cause : e);
+            }
             return new TranslationResponse(Collections.emptyList(), modelFamily, "Error during model inference.");
+        } catch (OrtException e) {
+            log.error("ONNX Runtime exception during translation setup", e);
+            return new TranslationResponse(Collections.emptyList(), modelFamily, "Error during model setup.");
         } catch (IOException e) {
             log.error("Failed to load tokenizer resources", e);
             return new TranslationResponse(Collections.emptyList(), modelFamily, "Error loading tokenizer.");

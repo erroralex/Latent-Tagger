@@ -59,18 +59,18 @@ const validationClass = computed(() => {
 }
 
 .tag-chip.valid {
-  border-color: var(--color-success);
-  color: var(--color-success);
+  border-color: var(--status-success);
+  color: var(--status-success);
 }
 
 .tag-chip.invalid {
-  border-color: var(--color-error);
-  color: var(--color-error);
+  border-color: var(--status-danger);
+  color: var(--status-danger);
 }
 
 .tag-chip.unvalidated {
-  border-color: var(--color-warning);
-  color: var(--color-warning);
+  border-color: var(--status-warning);
+  color: var(--status-warning);
 }
 
 .tag-name {

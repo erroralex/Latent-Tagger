@@ -62,9 +62,27 @@ const applyPreset = (preset) => {
   display: flex;
   gap: 8px;
   margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.preset-bar button {
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  padding: 6px 12px;
+  border-radius: var(--border-radius-md, 8px);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.preset-bar button:hover {
+  background: var(--bg-panel);
 }
 
 .preset-bar button.active {
-  background-color: var(--color-primary);
+  background: var(--accent-primary, var(--btn-fill));
+  border-color: var(--accent-primary, var(--border-light));
+  color: var(--text-primary);
 }
 </style>
